@@ -1,6 +1,10 @@
 package dynamic.augmentedreality;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -12,11 +16,13 @@ import java.io.IOException;
  * Created by admin on 23/06/2017.
  */
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback,Runnable {
     public final String TAG = "CameraPreview";
 
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    private Bitmap mBitmap;
+
 
     public CameraPreview(Context context, Camera camera) {
         super(context);
@@ -29,14 +35,25 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
+        mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_name);
     }
 
 
     public void surfaceCreated(SurfaceHolder holder) {
+
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
+
+            /*if(holder!=null) {
+                Canvas canvas = holder.lockCanvas();
+                if (canvas == null) {
+                    Log.e(TAG, "Cannot draw onto the canvas as it's null");
+                }
+                draw(canvas);
+                holder.unlockCanvasAndPost(canvas);
+            }*/
         } catch (IOException e) {
             Log.d(TAG, "Error setting camera preview: " + e.getMessage());
         }
@@ -75,5 +92,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e){
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(mBitmap, 10, 10, null);
+    }
+
+    @Override
+    public void run() {
+
     }
 }
