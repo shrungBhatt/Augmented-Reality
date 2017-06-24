@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -19,9 +19,12 @@ import java.io.IOException;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback,Runnable {
     public final String TAG = "CameraPreview";
 
+    Thread mThread = null;
+    boolean mFlag = false;
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private Bitmap mBitmap;
+    float x=0,y=0;
 
 
     public CameraPreview(Context context, Camera camera) {
@@ -38,7 +41,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
-        mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_action_name);
+
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawBitmap(mBitmap, 0, 0,null);
     }
 
 
@@ -46,17 +56,23 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
+
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
+//            Canvas canvas = null;
+//
+//            try {
+//                canvas = holder.lockCanvas(null);
+//                onDraw(canvas);
+//            } catch (Exception e) {
+//               Log.e(TAG,"Error" + e.getMessage());
+//            } finally {
+//                if (canvas != null) {
+//                    holder.unlockCanvasAndPost(canvas);
+//                }
+//            }
 
-            /*if(holder!=null) {
-                Canvas canvas = holder.lockCanvas();
-                if (canvas == null) {
-                    Log.e(TAG, "Cannot draw onto the canvas as it's null");
-                }
-                draw(canvas);
-                holder.unlockCanvasAndPost(canvas);
-            }*/
+
         } catch (IOException e) {
             Log.d(TAG, "Error setting camera preview: " + e.getMessage());
         }
@@ -97,13 +113,35 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(mBitmap, 10, 10, null);
-    }
 
     @Override
     public void run() {
+        while(mFlag){
+            if(!mHolder.getSurface().isValid()){
+                continue;
+            }
+            Canvas canvas = mHolder.lockCanvas();
+            canvas.drawBitmap(mBitmap,x,y,null);
+            mHolder.unlockCanvasAndPost(canvas);
+        }
+    }
 
+    public void pause(){
+        mFlag = false;
+        while(true) {
+            try {
+                mThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            break;
+        } mThread = null;
+
+    }
+
+    public void resume(){
+        mFlag = true;
+        mThread = new Thread(this);
+        mThread.start();
     }
 }
