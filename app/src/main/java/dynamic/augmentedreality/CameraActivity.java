@@ -1,7 +1,5 @@
 package dynamic.augmentedreality;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,19 +7,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 public class CameraActivity extends AppCompatActivity {
 
     private Camera mCamera;
     private CameraPreview mPreview;
     private OnCameraView mOnCameraView;
-    private Button mCaptureButton;
+    private Button mShowButton;
+    private Button mHideButton;
+    private FrameLayout mOnCameraViewFrameLayout;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.camera_preview);
+
+        mOnCameraViewFrameLayout = (FrameLayout)findViewById(R.id.on_camera_view);
 
         try {
             mCamera = Camera.open();
@@ -35,35 +37,27 @@ public class CameraActivity extends AppCompatActivity {
         preview.addView(mPreview);
 
 
-
-        mCaptureButton = (Button)findViewById(R.id.button_capture);
-        mCaptureButton.setOnClickListener(new View.OnClickListener() {
+        mShowButton = (Button)findViewById(R.id.button_show);
+        mShowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mOnCameraView = new OnCameraView(CameraActivity.this);
-                FrameLayout onCameraPreview = (FrameLayout)findViewById(R.id.on_camera_view);
-                onCameraPreview.addView(mOnCameraView);
+                mOnCameraViewFrameLayout.addView(mOnCameraView);
+            }
+        });
+
+        mHideButton = (Button)findViewById(R.id.button_hide);
+        mHideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mOnCameraViewFrameLayout != null){
+                    mOnCameraViewFrameLayout.removeAllViews();
+                }
+
             }
         });
 
 
     }
 
-
-
-
-
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        mPreview.pause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        mPreview.resume();
-    }
 }

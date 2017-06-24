@@ -8,18 +8,37 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
+
     <FrameLayout
         android:id="@+id/on_camera_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent" />
 
-
-    <Button
-        android:id="@+id/button_capture"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="12dp"
-        android:text="Capture" />
+        android:layout_gravity="bottom|center"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_show"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:text="Show" />
+
+        <Button
+            android:id="@+id/button_hide"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Hide" />
+    </LinearLayout>
+
+
 </FrameLayout>

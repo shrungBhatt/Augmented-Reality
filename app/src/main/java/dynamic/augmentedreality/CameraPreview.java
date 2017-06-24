@@ -16,15 +16,12 @@ import java.io.IOException;
  * Created by admin on 23/06/2017.
  */
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback,Runnable {
+public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     public final String TAG = "CameraPreview";
 
-    Thread mThread = null;
-    boolean mFlag = false;
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    private Bitmap mBitmap;
-    float x=0,y=0;
+
 
 
     public CameraPreview(Context context, Camera camera) {
@@ -45,13 +42,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.drawBitmap(mBitmap, 0, 0,null);
-    }
-
-
     public void surfaceCreated(SurfaceHolder holder) {
 
         // The Surface has been created, now tell the camera where to draw the preview.
@@ -59,30 +49,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
-//            Canvas canvas = null;
-//
-//            try {
-//                canvas = holder.lockCanvas(null);
-//                onDraw(canvas);
-//            } catch (Exception e) {
-//               Log.e(TAG,"Error" + e.getMessage());
-//            } finally {
-//                if (canvas != null) {
-//                    holder.unlockCanvasAndPost(canvas);
-//                }
-//            }
-
 
         } catch (IOException e) {
             Log.d(TAG, "Error setting camera preview: " + e.getMessage());
         }
     }
 
-
     public void surfaceDestroyed(SurfaceHolder holder) {
         // empty. Take care of releasing the Camera preview in your activity.
     }
-
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // If your preview can change or rotate, take care of those events here.
@@ -114,34 +89,4 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
 
-    @Override
-    public void run() {
-        while(mFlag){
-            if(!mHolder.getSurface().isValid()){
-                continue;
-            }
-            Canvas canvas = mHolder.lockCanvas();
-            canvas.drawBitmap(mBitmap,x,y,null);
-            mHolder.unlockCanvasAndPost(canvas);
-        }
-    }
-
-    public void pause(){
-        mFlag = false;
-        while(true) {
-            try {
-                mThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            break;
-        } mThread = null;
-
-    }
-
-    public void resume(){
-        mFlag = true;
-        mThread = new Thread(this);
-        mThread.start();
-    }
 }
