@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.hardware.Camera;
+import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
@@ -37,16 +38,20 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder = getHolder();
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
-
 
     }
+
+
 
     public void surfaceCreated(SurfaceHolder holder) {
 
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
 
+            mCamera.setDisplayOrientation(90);
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            mCamera.setParameters(parameters);
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
 

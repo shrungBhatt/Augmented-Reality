@@ -12,6 +12,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private Camera mCamera;
     private CameraPreview mPreview;
+    private CameraTextureActivity mCameraTextureActivity;
     private OnCameraView mOnCameraView;
     private Button mShowButton;
     private Button mHideButton;
@@ -31,10 +32,12 @@ public class CameraActivity extends AppCompatActivity {
             Log.d("ERROR", "Failed to get camera: " + e.getMessage());
         }
 
+//        mPreview = new CameraPreview(this, mCamera);
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera);
+        mCameraTextureActivity = new CameraTextureActivity(this,mCamera);
+
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_view);
-        preview.addView(mPreview);
+        preview.addView(mCameraTextureActivity);
 
 
         mShowButton = (Button)findViewById(R.id.button_show);
