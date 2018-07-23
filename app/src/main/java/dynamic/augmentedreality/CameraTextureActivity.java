@@ -8,7 +8,6 @@ import android.graphics.SurfaceTexture;
 
 import android.hardware.Camera;
 import android.opengl.GLUtils;
-import android.renderscript.RenderScript;
 import android.util.Log;
 import android.view.TextureView;
 
@@ -45,7 +44,7 @@ public class CameraTextureActivity extends TextureView implements TextureView.Su
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-        try {
+        /*try {
             mCamera.setDisplayOrientation(90);
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
@@ -54,10 +53,10 @@ public class CameraTextureActivity extends TextureView implements TextureView.Su
             mCamera.startPreview();
         } catch (IOException ioe) {
             // Something bad happened
-        }
+        }*/
 
-//        mRenderThread = new RenderThread(getResources(),surfaceTexture);
-//        mRenderThread.start();
+        mRenderThread = new RenderThread(getResources(),surfaceTexture);
+        mRenderThread.start();
 
     }
 
